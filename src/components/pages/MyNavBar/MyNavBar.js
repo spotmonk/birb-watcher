@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink as RRNavLink } from 'react-router-dom';
 import {
   Collapse,
   Navbar,
@@ -7,11 +8,6 @@ import {
   Nav,
   NavItem,
   NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  NavbarText,
 } from 'reactstrap';
 
 import firebase from 'firebase/app';
@@ -46,40 +42,39 @@ class MyNavBar extends React.Component {
     firebase.auth().signOut();
   }
 
+  buildNavbar = () => {
+    const { authed } = this.props;
+    if (authed) {
+      return (
+        <Nav className="ml-auto" navbar>
+          <NavItem>
+            <NavLink tag={RRNavLink} to="/home">Home</NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink tag={RRNavLink} to="/new">New</NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink onClick={this.logOutEvent} >Log Me Out</NavLink>
+          </NavItem>
+        </Nav>
+      );
+    }
+    return (
+      <nav className="ml-auto" navbar>
+        <button className="btn btn-outline-success my-2 my-sm-0" type="submit" onClick={this.logInEvent}>Log In</button>
+      </nav>
+    );
+  }
+
   render() {
     const { isOpen } = this.state;
     return (
         <div>
       <Navbar color="light" light expand="md">
-        <NavbarBrand href="/">reactstrap</NavbarBrand>
+        <NavbarBrand href="/">Birb Watcher</NavbarBrand>
         <NavbarToggler onClick={this.toggle} />
         <Collapse isOpen={isOpen} navbar>
-          <Nav className="mr-auto" navbar>
-            <NavItem>
-              <NavLink href="/components/">Components</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="https://github.com/reactstrap/reactstrap">GitHub</NavLink>
-            </NavItem>
-            <UncontrolledDropdown nav inNavbar>
-              <DropdownToggle nav caret>
-                Options
-              </DropdownToggle>
-              <DropdownMenu right>
-                <DropdownItem>
-                  Option 1
-                </DropdownItem>
-                <DropdownItem>
-                  Option 2
-                </DropdownItem>
-                <DropdownItem divider />
-                <DropdownItem>
-                  Reset
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>
-          </Nav>
-          <NavbarText>Simple Text</NavbarText>
+          {this.buildNavbar()}
         </Collapse>
       </Navbar>
     </div>
